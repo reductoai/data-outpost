@@ -11,6 +11,30 @@
     "status": "House museum",
     "hook": "The house that stayed when San Francisco burned.",
     "summary": "A family home read through architectural surveys, preservation forms, photographs, a fire map, newspapers, and first-person accounts of the 1906 earthquake.",
+    "brief": {
+      "title": "One family house, two versions of San Francisco.",
+      "body": "Water records date the house’s completion to October 1886, when Franklin Street was filling with elaborate wooden residences. Twenty years later, the earthquake and fire erased much of that city. The flames crossed Van Ness in places but stopped short of the west side of Franklin, leaving the Haas–Lilienthal House standing. Family occupation continued until 1972, preserving not only a Queen Anne exterior but layered rooms, built-in furniture, and the evidence of how a prosperous San Francisco family adapted one house across generations.",
+      "moments": [
+        {
+          "date": "1886",
+          "title": "The water turns on",
+          "detail": "Municipal records show service beginning on October 26, the clearest surviving marker of the house’s completion.",
+          "source_ids": ["habs", "register"]
+        },
+        {
+          "date": "1906",
+          "title": "The fire stops nearby",
+          "detail": "The fire crossed Van Ness at points, but the houses on the west side of Franklin survived.",
+          "source_ids": ["habs", "letter"]
+        },
+        {
+          "date": "1972",
+          "title": "A private home becomes public history",
+          "detail": "Alice Haas Lilienthal’s death ended decades of family occupation and opened the way for preservation as a house museum.",
+          "source_ids": ["habs", "register"]
+        }
+      ]
+    },
     "image": "./assets/images/haas-house.jpg",
     "pin": { "x": 16, "y": 36 },
     "official_url": "https://www.haas-lilienthalhouse.org/",
@@ -41,6 +65,30 @@
     "status": "Museum",
     "hook": "Frida Kahlo’s private universe, room by room.",
     "summary": "The house preserves paintings, photographs, clothing, books, furnishings, folk art, and the personal objects through which Frida Kahlo constructed a life and image.",
+    "brief": {
+      "title": "For Frida Kahlo, the house was biography, studio, and self-portrait.",
+      "body": "Frida Kahlo was born at Londres 247, lived there for 36 of her 47 years, made much of her work there, and died there. Casa Azul was at once family home, refuge, studio, and the carefully composed setting through which she presented herself to the world. Beyond its blue walls, letters and research archives recover a more mobile life: medical treatment, political commitments, exhibitions, and journeys with Diego Rivera across the United States—all returning to the house in Coyoacán.",
+      "moments": [
+        {
+          "date": "1907",
+          "title": "A life begins at Londres 247",
+          "detail": "Kahlo was born in Coyoacán and would spend most of her life in the family home now known as Casa Azul.",
+          "source_ids": ["release", "nmwa-finding-aid"]
+        },
+        {
+          "date": "1930–35",
+          "title": "Letters from a life in motion",
+          "detail": "Hundreds of letters trace her family relationships and impressions of San Francisco, Detroit, and New York during formative artistic years.",
+          "source_ids": ["nmwa-finding-aid", "herrera"]
+        },
+        {
+          "date": "1955",
+          "title": "The home becomes a legacy",
+          "detail": "Diego Rivera established the trust that would administer Casa Azul and preserve the artists’ cultural inheritance.",
+          "source_ids": ["release"]
+        }
+      ]
+    },
     "image": "./assets/houses/casa-azul.jpg",
     "pin": { "x": 22, "y": 49 },
     "official_url": "https://www.museofridakahlo.org.mx/museo/?lang=en",
@@ -73,6 +121,30 @@
     "status": "Institute & museum",
     "hook": "A glass house suspended inside the Atlantic forest.",
     "summary": "Lina Bo Bardi’s first built project became a home, a meeting place, and eventually the center of an archive containing drawings, photographs, notebooks, and design work.",
+    "brief": {
+      "title": "The house that became Lina Bo Bardi’s argument with progress.",
+      "body": "Casa de Vidro began as a declaration of arrival: Lina Bo Bardi’s first completed building and a sign that she and Pietro Bardi had chosen Brazil. Its floating glass room promised an industrial future, while brick, timber, ceramic tile, and thatch tied it to ordinary building traditions. Construction depended on imported engineering, local improvisation, and even black-market cement. As panes cracked and the planted garden thickened into forest, the immaculate modern object became something richer—a lived-in record of changing ideas about technology, nature, and Brazilian culture.",
+      "moments": [
+        {
+          "date": "1949",
+          "title": "Two lots in a new suburb",
+          "detail": "The Bardis bought land at one of Morumbi’s highest points, then still shaped by farms, pasture, and new roads.",
+          "source_ids": ["conservation", "house"]
+        },
+        {
+          "date": "1951–52",
+          "title": "A modern experiment under pressure",
+          "detail": "Steel tubes, reinforced concrete, glass, brick, and timber came together during a national cement shortage and an evolving construction process.",
+          "source_ids": ["conservation", "drawings"]
+        },
+        {
+          "date": "1989 onward",
+          "title": "The home becomes an archive",
+          "detail": "Collaborators began organizing Lina’s work for exhibition; the collection now spans professional records, photographs, drawings, notebooks, models, and films.",
+          "source_ids": ["archive", "online-catalogue"]
+        }
+      ]
+    },
     "image": "./assets/houses/casa-de-vidro.jpg",
     "pin": { "x": 34, "y": 68 },
     "official_url": "https://institutobardi.org.br/a-casa-de-vidro/a-casa-dos-bardi/",
@@ -104,6 +176,30 @@
     "status": "Museum",
     "hook": "A home designed to hold an entire world of objects.",
     "summary": "Soane continually rebuilt three adjoining houses into a dense architectural experiment filled with models, fragments, paintings, drawings, and ingenious moving walls.",
+    "brief": {
+      "title": "A house engineered for discovery rather than domestic calm.",
+      "body": "John Soane did not simply fill a home with a collection; he rebuilt three adjoining houses around the act of looking. Mirrors, skylights, narrow passages, architectural fragments, models, paintings, and books turned domestic rooms into an academy of architecture. He opened the collection to Royal Academy students during his lifetime, then used an 1833 Act of Parliament to preserve the house and its contents after his death. The result is both intensely personal and deliberately public: a private experiment designed to outlive its maker.",
+      "moments": [
+        {
+          "date": "1792–1824",
+          "title": "Three houses become one experiment",
+          "detail": "Soane rebuilt Nos. 12, 13, and 14 Lincoln’s Inn Fields in successive campaigns, continually altering their interiors.",
+          "source_ids": ["description", "collections"]
+        },
+        {
+          "date": "1806",
+          "title": "The collection becomes a classroom",
+          "detail": "After his Royal Academy appointment, Soane arranged books, casts, and models for students to consult around his lectures.",
+          "source_ids": ["archive", "day-books"]
+        },
+        {
+          "date": "1833",
+          "title": "A museum protected by Parliament",
+          "detail": "An Act secured the house and collection for students and the public, with free access and an instruction to preserve Soane’s arrangement.",
+          "source_ids": ["description", "research-library"]
+        }
+      ]
+    },
     "image": "./assets/houses/soane-house.jpg",
     "pin": { "x": 48, "y": 31 },
     "official_url": "https://www.soane.org/",
@@ -136,6 +232,30 @@
     "status": "Historic ruins",
     "hook": "A royal palace where the documented record meets the ghost story.",
     "summary": "The surviving gate, walls, plans, and official histories tell one story; later accounts of haunting tell another. Archive House keeps evidence and folklore visibly separate.",
+    "brief": {
+      "title": "The ghost story is famous. The government archive is far stranger.",
+      "body": "Shaniwar Wada was the fortified headquarters of Peshwa power, not merely the setting for a haunting. Behind its gates sat halls, fountains, residences, and the administrative machinery of a state whose records followed revenue, justice, diplomacy, war, public works, charity, and daily life. A vast fire in 1828 reduced the palace to its surviving walls and gateways. The Peshwa Daftar restores what the ruin cannot show: a capital operating through thousands of letters, orders, accounts, and diaries.",
+      "moments": [
+        {
+          "date": "1730s",
+          "title": "A palace becomes a seat of power",
+          "detail": "Built for Bajirao I, the complex grew into the political headquarters of the Peshwas in Pune.",
+          "source_ids": ["pune", "tourism"]
+        },
+        {
+          "date": "1708–1817",
+          "title": "The paper palace",
+          "detail": "Selections from the Peshwa Daftar preserve roughly 20,000 folio pages on the workings of the Maratha state and society.",
+          "source_ids": ["peshwa-daftar", "archive-scale"]
+        },
+        {
+          "date": "1828",
+          "title": "Fire leaves an outline",
+          "detail": "The palace burned, leaving the fortified walls and gates to stand in for spaces now recoverable mainly through records.",
+          "source_ids": ["pune", "tourism"]
+        }
+      ]
+    },
     "image": "./assets/houses/shaniwar-wada.jpg",
     "pin": { "x": 69, "y": 50 },
     "official_url": "https://pune.gov.in/en/tourist-place/shaniwarwada/",
@@ -167,6 +287,30 @@
     "status": "Art museum",
     "hook": "French Art Deco remade through Japanese craft.",
     "summary": "The residence brings French designers and Japanese architects and artisans into a single building whose later lives included official residence, guest house, event venue, and museum.",
+    "brief": {
+      "title": "A Parisian design language, translated room by room in Tokyo.",
+      "body": "After Prince Asaka and Princess Nobuko encountered the 1925 Art Deco exposition in Paris, they commissioned a residence that joined French decorative design with Japanese architectural skill. Henri Rapin shaped the principal interiors while engineers and artisans of the Imperial Household Ministry executed the building, incorporating work associated with figures such as René Lalique. Because the house survived with relatively few alterations, its later roles remain unusually legible: family residence, political workplace, state guest house, event venue, and, since 1983, art museum.",
+      "moments": [
+        {
+          "date": "1925",
+          "title": "An exposition changes the brief",
+          "detail": "The prince and princess encountered the newest Art Deco work in Paris and carried that experience home.",
+          "source_ids": ["timeline", "az"]
+        },
+        {
+          "date": "1933",
+          "title": "French design meets Japanese execution",
+          "detail": "Henri Rapin’s interiors were realized with the Imperial Household Ministry’s architects and craftspeople in a remarkably intact residence.",
+          "source_ids": ["timeline", "building", "az"]
+        },
+        {
+          "date": "1983",
+          "title": "The residence becomes the exhibition",
+          "detail": "As the Teien Art Museum, the building now presents art inside rooms whose materials and decoration are part of the collection.",
+          "source_ids": ["timeline", "rooms"]
+        }
+      ]
+    },
     "image": "./assets/houses/prince-asaka.jpg",
     "pin": { "x": 84, "y": 39 },
     "official_url": "https://www.teien-art-museum.ne.jp/en/museum/building/",
@@ -198,6 +342,30 @@
     "status": "Palace museum",
     "hook": "A palace holding the memory of Asante kings and queen mothers.",
     "summary": "The former residence of the Asantehene opens onto court life, regalia, exile and return, and the continuing cultural authority of the Asante Kingdom.",
+    "brief": {
+      "title": "Here, the museum building is itself an object of return.",
+      "body": "The British colonial government built the residence in 1925 for Asantehene Prempeh I after his return from exile in the Seychelles. It later housed Prempeh II before becoming a museum created by the palace to preserve and teach Asante history on its own ground. The collection moves between royal and colonial histories: regalia, palanquins, drums, photographs, battle dress, life-size figures of kings and queen mothers, and gold objects removed during the 1896 British expedition and later recovered.",
+      "moments": [
+        {
+          "date": "1925",
+          "title": "A king returns from exile",
+          "detail": "The residence was built for Prempeh I after his return from the Seychelles and later occupied by Prempeh II.",
+          "source_ids": ["collections", "holdings"]
+        },
+        {
+          "date": "1995",
+          "title": "The old palace becomes a museum",
+          "detail": "Manhyia Palace established the museum to preserve and communicate the history and culture of Asanteman.",
+          "source_ids": ["collections", "museum"]
+        },
+        {
+          "date": "Present",
+          "title": "Royal memory remains active",
+          "detail": "The collection links historical rulers and queen mothers to a living palace and the continuing cultural authority of the Asante Kingdom.",
+          "source_ids": ["museum", "audiovisual"]
+        }
+      ]
+    },
     "image": "./assets/houses/manhyia-palace.jpg",
     "pin": { "x": 48, "y": 58 },
     "official_url": "https://manhyiapalace.org/manhyia-palace-museum",
@@ -227,8 +395,32 @@
     "style": "Indo-European revival",
     "category": "Myth & restoration",
     "status": "Historic monument",
-    "hook": "A desert palace built to follow the sun.",
+    "hook": "The palace that sold a desert suburb—and became a landmark twice.",
     "summary": "Railway ambition, an experimental suburb, extraordinary architecture, decades of abandonment, and a major restoration converge in one of Cairo’s strangest residences.",
+    "brief": {
+      "title": "First a symbol of a city being invented. Then a ruin the city refused to forget.",
+      "body": "Baron Édouard Empain helped create Heliopolis as a garden suburb in Cairo’s desert, and his palace became its most uncanny advertisement. Designed by Alexandre Marcel between 1907 and 1911, its carved exterior drew on Cambodian and Hindu temple architecture while its gardens staged the building as a freestanding landmark. After roughly 48 years of abandonment, the palace survived through legend as much as maintenance. A 2018–20 restoration used digital building models and structural analysis to reopen it as a museum—and reconnect it to the neighborhood it once helped sell.",
+      "moments": [
+        {
+          "date": "1905–13",
+          "title": "Heliopolis rises from the desert",
+          "detail": "Empain and Boghos Nubar developed a new garden suburb northeast of Cairo, with the palace as a defining landmark.",
+          "source_ids": ["study", "heliopolis"]
+        },
+        {
+          "date": "1907–11",
+          "title": "A Cambodian fantasy in Cairo",
+          "detail": "Alexandre Marcel designed a richly carved residence whose imagery borrowed from Cambodian and Hindu temple architecture.",
+          "source_ids": ["study", "mwnf"]
+        },
+        {
+          "date": "2018–20",
+          "title": "A ruin reopens",
+          "detail": "After decades of abandonment, a restoration supported by digital documentation returned the palace to public use as a museum.",
+          "source_ids": ["sustainability", "restoration"]
+        }
+      ]
+    },
     "image": "./assets/houses/baron-empain.jpg",
     "pin": { "x": 57, "y": 44 },
     "official_url": "https://egymonuments.gov.eg/en/monuments/baron-empain-palace",
@@ -261,6 +453,30 @@
     "status": "House museum",
     "hook": "The private estate that became Australia’s first house museum.",
     "summary": "The house, grounds, family objects, photographs, and changing museum interpretation reveal how a private estate was turned into public history.",
+    "brief": {
+      "title": "The unfinished family estate that taught Australia how to make a house museum.",
+      "body": "Vaucluse House stands on Birrabirragal and Gadigal Country, where colonial ownership transformed a cottage and surrounding land into a vast nineteenth-century estate. By the 1830s its grounds covered much of the present suburb, even as the main house remained unfinished. In 1915 it opened as Australia’s first official house museum. Later minute books reveal that the museum itself has a history: trustees debated damp, gardens, period rooms, and the return of Wentworth furniture dispersed at an earlier sale.",
+      "moments": [
+        {
+          "date": "1830s",
+          "title": "An estate outgrows its house",
+          "detail": "The gardens and grounds spread across much of present-day Vaucluse while the picturesque main residence remained unfinished.",
+          "source_ids": ["museum", "heritage"]
+        },
+        {
+          "date": "1915",
+          "title": "A private place becomes public history",
+          "detail": "Vaucluse House opened as Australia’s first official house museum.",
+          "source_ids": ["museum", "preservation"]
+        },
+        {
+          "date": "1968",
+          "title": "The museum rebuilds a room through records",
+          "detail": "Trustees recovered original Wentworth chairs and a sideboard sold with family furniture in 1900, restoring them to the house.",
+          "source_ids": ["papers", "collections"]
+        }
+      ]
+    },
     "image": "./assets/houses/vaucluse-house.jpg",
     "pin": { "x": 85, "y": 74 },
     "official_url": "https://mhnsw.au/visit-us/vaucluse-house/",

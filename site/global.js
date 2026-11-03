@@ -73,6 +73,9 @@ function matchesFilter(house) {
   if (state.filter === "All") return true;
   const archiveText = [
     house.archive_pack?.scope,
+    house.brief?.title,
+    house.brief?.body,
+    ...(house.brief?.moments || []).flatMap((moment) => [moment.date, moment.title, moment.detail]),
     ...(house.archive_pack?.formats || []),
     ...(house.archive_pack?.messiness || []),
     ...house.sources.flatMap((source) => [source.title, source.type]),
@@ -87,7 +90,7 @@ function matchesFilter(house) {
 function applyFilters() {
   const query = state.query.trim().toLocaleLowerCase();
   state.filtered = state.houses.filter((house) => {
-    const haystack = [house.name, house.city, house.country, house.continent, house.style, house.category, house.hook, house.summary, house.archive_pack?.scope, ...(house.archive_pack?.formats || []), ...(house.archive_pack?.messiness || [])]
+    const haystack = [house.name, house.city, house.country, house.continent, house.style, house.category, house.hook, house.summary, house.brief?.title, house.brief?.body, ...(house.brief?.moments || []).flatMap((moment) => [moment.date, moment.title, moment.detail]), house.archive_pack?.scope, ...(house.archive_pack?.formats || []), ...(house.archive_pack?.messiness || [])]
       .join(" ")
       .toLocaleLowerCase();
     return matchesFilter(house) && (!query || haystack.includes(query));
@@ -356,6 +359,30 @@ function archivePack(house) {
   `;
 }
 
+function storyMoments(house) {
+  const moments = house.brief?.moments || [];
+  if (!moments.length) return "";
+  return `
+    <ol class="story-moments">
+      ${moments.map((moment) => {
+        const sourceNames = (moment.source_ids || [])
+          .map((id) => house.sources.find((source) => source.id === id)?.title)
+          .filter(Boolean);
+        return `
+          <li>
+            <time>${escapeHTML(moment.date)}</time>
+            <div>
+              <h3>${escapeHTML(moment.title)}</h3>
+              <p>${escapeHTML(moment.detail)}</p>
+              ${sourceNames.length ? `<small>From ${escapeHTML(sourceNames.join(" · "))}</small>` : ""}
+            </div>
+          </li>
+        `;
+      }).join("")}
+    </ol>
+  `;
+}
+
 async function parsedPreview(house) {
   const target = document.querySelector("[data-parsed-preview]");
   const parsedSource = house.sources.find((source) => getParseRecord(house.id, source.id)?.status === "complete");
@@ -390,6 +417,7 @@ function openProperty(id, updateHash = true) {
   const primaryParsed = parsedSources[0] ? getParseRecord(house.id, parsedSources[0].id) : null;
   const saved = state.saved.has(id);
   const pack = house.archive_pack || {};
+  const brief = house.brief || {};
 
   ui.propertyContent.innerHTML = `
     <section class="property-gallery" aria-label="${escapeHTML(house.name)} gallery">
@@ -423,8 +451,9 @@ function openProperty(id, updateHash = true) {
 
         <section class="property-section">
           <h2>What’s special</h2>
-          <p class="story-lede">${escapeHTML(house.hook)}</p>
-          <p>${escapeHTML(house.summary)}</p>
+          <p class="story-lede">${escapeHTML(brief.title || house.hook)}</p>
+          <p>${escapeHTML(brief.body || house.summary)}</p>
+          ${storyMoments(house)}
         </section>
 
         <section class="property-section archive-pack-section">
