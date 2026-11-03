@@ -13,7 +13,7 @@ Archive House looks familiar—like a real-estate search product—but replaces 
 5. Open Casa de Vidro and confirm the saved Reducto excerpt loads.
 6. Keep `archives/` open in Finder for the document handoff.
 
-The interface and saved excerpts work locally. External museum links and Reducto Studio links require internet access.
+The interface and saved excerpts work locally. External museum links and Reducto Studio links require internet access. Live parsing also requires `REDUCTO_API_KEY` or an authenticated Reducto CLI before the server starts; the footer will say **Live document parsing with Reducto** when it is ready.
 
 ## Suggested five-minute demo
 

@@ -20,7 +20,7 @@
       <nav class="nav-right" aria-label="Account">
         <button type="button" id="open-submit">List a house</button>
         <button type="button" id="saved-nav">Saved <span id="saved-count">0</span></button>
-        <button class="signin-button" type="button">Sign in</button>
+        <button class="live-parse-button" id="open-parse" type="button">Parse a document</button>
       </nav>
     </header>
 
@@ -67,7 +67,7 @@
         </div>
         <footer class="results-footer">
           <b>Archive House</b>
-          <span>Public records, parsed with Reducto</span>
+          <span id="reducto-mode">Checking Reducto…</span>
           <button id="open-credits" type="button">Sources &amp; credits</button>
         </footer>
       </section>
@@ -101,6 +101,51 @@
         <label>Archive or museum link<input name="archive" type="url" placeholder="https://…" /></label>
         <button type="submit">Submit property</button>
       </form>
+    </dialog>
+
+    <dialog class="parse-dialog" id="parse-dialog">
+      <button class="dialog-close" type="button" data-parse-close aria-label="Close">×</button>
+      <p class="dialog-eyebrow">Live Reducto parse</p>
+      <h2>Open a messy document.</h2>
+      <p>Choose a file or public document URL. Archive House sends it to Reducto from the server, then turns the structured response into a quick, readable record.</p>
+      <div class="parse-connection checking" id="parse-connection">Checking the Reducto connection…</div>
+      <div class="parse-context" id="parse-context" hidden></div>
+
+      <form id="parse-form">
+        <label class="file-drop" for="parse-file">
+          <span>Drop in a difficult document</span>
+          <strong id="parse-file-label">Choose PDF, image, Office file, or spreadsheet</strong>
+          <small id="parse-file-limit">The API key never leaves the server.</small>
+          <input id="parse-file" type="file" accept=".pdf,.png,.jpg,.jpeg,.tif,.tiff,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.csv" />
+        </label>
+        <div class="parse-or"><span>or</span></div>
+        <label class="parse-field">Public document URL<input id="parse-url" type="url" placeholder="https://archive.org/document.pdf" /></label>
+        <label class="parse-field">Preview depth
+          <select id="parse-pages">
+            <option value="12">First 12 pages · fastest</option>
+            <option value="24">First 24 pages</option>
+            <option value="all">Full document</option>
+          </select>
+        </label>
+        <button class="parse-submit" id="parse-submit" type="submit">Parse with Reducto</button>
+        <p class="parse-privacy">Files are sent directly from this server to Reducto for processing. Nothing is added to GitHub.</p>
+      </form>
+
+      <section class="parse-progress" id="parse-progress" hidden aria-live="polite">
+        <div class="parse-spinner" aria-hidden="true"></div>
+        <div><strong id="parse-progress-title">Sending the document to Reducto…</strong><p id="parse-progress-copy">Scans, handwriting, tables, and unusual layouts are welcome.</p></div>
+      </section>
+
+      <section class="parse-result" id="parse-result" hidden aria-live="polite">
+        <div class="parse-result-head"><span>Structured record ready</span><strong id="parse-result-title">Document parsed</strong></div>
+        <div class="parse-stats" id="parse-stats"></div>
+        <blockquote id="parse-excerpt"></blockquote>
+        <div class="parse-actions">
+          <a id="parse-studio-link" target="_blank" rel="noreferrer">Inspect in Reducto Studio ↗</a>
+          <button id="download-parse" type="button">Download JSON</button>
+          <button id="parse-another" type="button">Parse another</button>
+        </div>
+      </section>
     </dialog>
 
     <dialog class="credits-dialog" id="credits-dialog">

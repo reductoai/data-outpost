@@ -6,6 +6,9 @@ const state = {
   alphabetical: false,
   selected: null,
   parseIndex: { sources: {} },
+  reducto: { configured: false, source: null, maximumUploadMb: 110 },
+  liveParseSource: null,
+  latestParse: null,
   saved: new Set(JSON.parse(localStorage.getItem("archive-house-saved") || "[]")),
 };
 
@@ -21,6 +24,25 @@ const ui = {
   propertySave: document.querySelector("#property-save"),
   savedCount: document.querySelector("#saved-count"),
   toast: document.querySelector("#toast"),
+  reductoMode: document.querySelector("#reducto-mode"),
+  parseDialog: document.querySelector("#parse-dialog"),
+  parseConnection: document.querySelector("#parse-connection"),
+  parseContext: document.querySelector("#parse-context"),
+  parseForm: document.querySelector("#parse-form"),
+  parseFile: document.querySelector("#parse-file"),
+  parseFileLabel: document.querySelector("#parse-file-label"),
+  parseFileLimit: document.querySelector("#parse-file-limit"),
+  parseUrl: document.querySelector("#parse-url"),
+  parsePages: document.querySelector("#parse-pages"),
+  parseSubmit: document.querySelector("#parse-submit"),
+  parseProgress: document.querySelector("#parse-progress"),
+  parseProgressTitle: document.querySelector("#parse-progress-title"),
+  parseProgressCopy: document.querySelector("#parse-progress-copy"),
+  parseResult: document.querySelector("#parse-result"),
+  parseResultTitle: document.querySelector("#parse-result-title"),
+  parseStats: document.querySelector("#parse-stats"),
+  parseExcerpt: document.querySelector("#parse-excerpt"),
+  parseStudioLink: document.querySelector("#parse-studio-link"),
 };
 
 const imageCredits = {
@@ -118,6 +140,183 @@ function cleanParsedText(value = "") {
     .trim();
 }
 
+function fileNameFromPath(value = "archive-document") {
+  const clean = value.split(/[?#]/)[0];
+  return decodeURIComponent(clean.slice(clean.lastIndexOf("/") + 1)) || "archive-document";
+}
+
+function setParseConnection() {
+  const configured = state.reducto.configured;
+  ui.parseConnection.className = `parse-connection ${configured ? "online" : "offline"}`;
+  ui.parseConnection.textContent = configured
+    ? `Reducto is live · server credential from ${state.reducto.source || "environment"}`
+    : "Saved demo mode · add REDUCTO_API_KEY or authenticate the Reducto CLI to parse live";
+  ui.parseSubmit.disabled = !configured;
+  ui.parseForm.classList.toggle("disabled", !configured);
+  ui.parseFileLimit.textContent = configured
+    ? `Up to ${state.reducto.maximumUploadMb} MB · the API key never leaves the server.`
+    : "The interface still includes saved Reducto results.";
+  ui.reductoMode.textContent = configured ? "Live document parsing with Reducto" : "Saved Reducto results · live key not configured";
+}
+
+async function checkReductoStatus() {
+  try {
+    const response = await fetch("./api/reducto/status", { cache: "no-store" });
+    if (!response.ok) throw new Error("Status unavailable");
+    const status = await response.json();
+    state.reducto = {
+      configured: Boolean(status.configured),
+      source: status.source,
+      maximumUploadMb: status.maximum_upload_mb || 110,
+    };
+  } catch {
+    state.reducto = { configured: false, source: null, maximumUploadMb: 110 };
+  }
+  setParseConnection();
+}
+
+function resetParseExperience(clearInputs = false) {
+  ui.parseProgress.hidden = true;
+  ui.parseResult.hidden = true;
+  ui.parseForm.hidden = false;
+  ui.parseSubmit.disabled = !state.reducto.configured;
+  ui.parseProgressTitle.textContent = "Sending the document to Reducto…";
+  ui.parseProgressCopy.textContent = "Scans, handwriting, tables, and unusual layouts are welcome.";
+  if (clearInputs) {
+    ui.parseFile.value = "";
+    ui.parseUrl.value = "";
+    ui.parseFileLabel.textContent = "Choose PDF, image, Office file, or spreadsheet";
+  }
+}
+
+function openParseDialog(houseId = null, sourceId = null) {
+  resetParseExperience(true);
+  const house = houseId ? state.houses.find((item) => item.id === houseId) : null;
+  const source = house?.sources.find((item) => item.id === sourceId) || null;
+  state.liveParseSource = source ? { house, source } : null;
+  ui.parseContext.hidden = !source;
+  ui.parseContext.innerHTML = source
+    ? `<span>Selected archive record</span><strong>${escapeHTML(house.name)} · ${escapeHTML(source.title)}</strong>`
+    : "";
+
+  if (source) {
+    if (/^https?:\/\//.test(source.input)) {
+      ui.parseUrl.value = source.input;
+      ui.parseFileLabel.textContent = "Or choose a file instead";
+    } else {
+      ui.parseFileLabel.textContent = `Ready to parse ${source.title}`;
+    }
+  }
+
+  setParseConnection();
+  ui.parseDialog.showModal();
+}
+
+function closeParseDialog() {
+  if (ui.parseDialog.open) ui.parseDialog.close();
+}
+
+async function localSourceFile() {
+  const selected = state.liveParseSource?.source;
+  if (!selected || /^https?:\/\//.test(selected.input)) return null;
+  const response = await fetch(selected.input);
+  if (!response.ok) throw new Error("The selected local archive file could not be opened.");
+  const blob = await response.blob();
+  return new File([blob], fileNameFromPath(selected.input), { type: blob.type || "application/octet-stream" });
+}
+
+function renderLiveParse(result, label) {
+  const chunks = Array.isArray(result.result?.chunks) ? result.result.chunks : [];
+  const blocks = chunks.flatMap((chunk) => Array.isArray(chunk.blocks) ? chunk.blocks : []);
+  const blockTypes = [...new Set(blocks.map((block) => block.type).filter(Boolean))];
+  const text = cleanParsedText(chunks.map((chunk) => chunk.content || "").join(" "));
+  const excerpt = text ? (text.length > 1800 ? `${text.slice(0, 1797).trimEnd()}…` : text) : "Reducto returned structured blocks without a text excerpt.";
+  const pages = result.usage?.num_pages ?? "—";
+  const credits = result.usage?.credits ?? "—";
+
+  state.latestParse = { result, label };
+  ui.parseResultTitle.textContent = label || "Document parsed";
+  ui.parseStats.innerHTML = [
+    [pages, "pages"],
+    [chunks.length, "chunks"],
+    [blocks.length, "blocks"],
+    [credits, "credits"],
+  ].map(([value, name]) => `<div class="parse-stat"><b>${escapeHTML(value)}</b><span>${name}</span></div>`).join("");
+  ui.parseExcerpt.textContent = excerpt;
+  ui.parseStudioLink.hidden = !/^https:\/\//.test(result.studio_link || "");
+  if (!ui.parseStudioLink.hidden) ui.parseStudioLink.href = result.studio_link;
+  ui.parseResult.querySelector(".parse-result-head span").textContent = blockTypes.length
+    ? `Structured record · ${blockTypes.slice(0, 4).join(" · ")}`
+    : "Structured record ready";
+  ui.parseForm.hidden = true;
+  ui.parseProgress.hidden = true;
+  ui.parseResult.hidden = false;
+}
+
+async function submitLiveParse(event) {
+  event.preventDefault();
+  if (!state.reducto.configured) return;
+
+  let file = ui.parseFile.files[0] || null;
+  const url = ui.parseUrl.value.trim();
+  if (!file && !url) file = await localSourceFile();
+  if (!file && !url) {
+    showToast("Choose a file or paste a public document URL");
+    return;
+  }
+
+  const label = file?.name || state.liveParseSource?.source.title || fileNameFromPath(url);
+  ui.parseForm.hidden = true;
+  ui.parseResult.hidden = true;
+  ui.parseProgress.hidden = false;
+  ui.parseSubmit.disabled = true;
+  const progressTimer = window.setTimeout(() => {
+    ui.parseProgressTitle.textContent = "Reading the document’s structure…";
+    ui.parseProgressCopy.textContent = "Reducto is reconstructing text, tables, figures, and page-level citations.";
+  }, 1800);
+
+  try {
+    const previewPages = ui.parsePages.value;
+    const options = file
+      ? {
+          method: "POST",
+          headers: {
+            "Content-Type": file.type || "application/octet-stream",
+            "X-File-Name": encodeURIComponent(file.name),
+            "X-Preview-Pages": previewPages,
+          },
+          body: file,
+        }
+      : {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url, preview_pages: previewPages }),
+        };
+    const response = await fetch("./api/reducto/parse", options);
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || "Reducto could not parse this document.");
+    renderLiveParse(result, label);
+  } catch (error) {
+    ui.parseProgress.hidden = true;
+    ui.parseForm.hidden = false;
+    ui.parseSubmit.disabled = false;
+    showToast(error.message || "The document could not be parsed");
+  } finally {
+    window.clearTimeout(progressTimer);
+  }
+}
+
+function downloadLatestParse() {
+  if (!state.latestParse) return;
+  const blob = new Blob([JSON.stringify(state.latestParse.result, null, 2)], { type: "application/json" });
+  const href = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = href;
+  anchor.download = `${state.latestParse.label.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase() || "reducto-parse"}.json`;
+  anchor.click();
+  URL.revokeObjectURL(href);
+}
+
 function sourceRows(house) {
   return house.sources.map((source, index) => {
     const parsed = getParseRecord(house.id, source.id);
@@ -130,7 +329,10 @@ function sourceRows(house) {
           <h3>${escapeHTML(source.title)} ${label}</h3>
           <p>${escapeHTML(source.institution)} · ${escapeHTML(source.type)} · ${escapeHTML(source.year)}</p>
         </div>
-        <a href="${escapeHTML(link)}" target="_blank" rel="noreferrer" aria-label="Open ${escapeHTML(source.title)}">↗</a>
+        <div class="source-actions">
+          ${source.parse_ready ? `<button type="button" data-parse-house="${escapeHTML(house.id)}" data-parse-source="${escapeHTML(source.id)}">Parse live</button>` : ""}
+          <a href="${escapeHTML(link)}" target="_blank" rel="noreferrer" aria-label="Open ${escapeHTML(source.title)}">↗</a>
+        </div>
       </article>
     `;
   }).join("");
@@ -249,6 +451,7 @@ function openProperty(id, updateHash = true) {
           <p class="status"><i></i> ${escapeHTML(pack.access || "Public archive available")}</p>
           <h2>Open the records</h2>
           <p>Read the institutional collection, inspect Reducto’s structured output, or save this house for later.</p>
+          ${house.sources.some((source) => source.parse_ready) ? `<button type="button" data-parse-house="${escapeHTML(house.id)}" data-parse-source="${escapeHTML(house.sources.find((source) => source.parse_ready).id)}">Parse a record live</button>` : ""}
           <a href="${escapeHTML(house.official_url)}" target="_blank" rel="noreferrer">Visit the institution</a>
           ${primaryParsed ? `<a href="${escapeHTML(primaryParsed.studio_link)}" target="_blank" rel="noreferrer">Open Reducto result</a>` : ""}
           <button type="button" data-save-current>${saved ? "♥ Saved" : "♡ Save this house"}</button>
@@ -394,6 +597,11 @@ document.querySelector("#property-share").addEventListener("click", async () => 
   }
 });
 ui.propertyContent.addEventListener("click", (event) => {
+  const parseButton = event.target.closest("[data-parse-source]");
+  if (parseButton) {
+    openParseDialog(parseButton.dataset.parseHouse, parseButton.dataset.parseSource);
+    return;
+  }
   if (event.target.closest("[data-save-current]")) toggleSaved(state.selected);
 });
 document.addEventListener("keydown", (event) => {
@@ -414,6 +622,36 @@ document.querySelector("#submit-form").addEventListener("submit", (event) => {
   showToast("Property submitted");
 });
 
+document.querySelector("#open-parse").addEventListener("click", () => openParseDialog());
+document.querySelector("[data-parse-close]").addEventListener("click", closeParseDialog);
+ui.parseForm.addEventListener("submit", submitLiveParse);
+ui.parseFile.addEventListener("change", () => {
+  const file = ui.parseFile.files[0];
+  if (!file) return;
+  ui.parseFileLabel.textContent = `${file.name} · ${(file.size / 1024 / 1024).toFixed(1)} MB`;
+  ui.parseUrl.value = "";
+});
+document.querySelector("#download-parse").addEventListener("click", downloadLatestParse);
+document.querySelector("#parse-another").addEventListener("click", () => resetParseExperience(true));
+
+const fileDrop = document.querySelector(".file-drop");
+["dragenter", "dragover"].forEach((type) => fileDrop.addEventListener(type, (event) => {
+  event.preventDefault();
+  fileDrop.classList.add("dragging");
+}));
+["dragleave", "drop"].forEach((type) => fileDrop.addEventListener(type, (event) => {
+  event.preventDefault();
+  fileDrop.classList.remove("dragging");
+}));
+fileDrop.addEventListener("drop", (event) => {
+  const file = event.dataTransfer.files[0];
+  if (!file) return;
+  const transfer = new DataTransfer();
+  transfer.items.add(file);
+  ui.parseFile.files = transfer.files;
+  ui.parseFile.dispatchEvent(new Event("change"));
+});
+
 const creditsDialog = document.querySelector("#credits-dialog");
 document.querySelector("#open-credits").addEventListener("click", () => creditsDialog.showModal());
 document.querySelector("[data-credits-close]").addEventListener("click", () => creditsDialog.close());
@@ -422,3 +660,4 @@ loadData().catch((error) => {
   ui.grid.innerHTML = `<div class="empty-state"><h2>${escapeHTML(error.message)}</h2></div>`;
   console.error(error);
 });
+checkReductoStatus();

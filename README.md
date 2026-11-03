@@ -46,13 +46,25 @@ Each property folder includes `manifest.json` with original URLs, byte sizes, pa
 
 ## Reducto
 
-The repository includes previously saved parse results, so the interface works without an API key. To regenerate representative parses:
+The repository includes previously saved parse results, so the interface works without an API key. It also includes a live, server-side Reducto workflow: visitors can upload a document or choose a public archive URL, preview 12 or 24 pages (or the full document), inspect structured text and block counts, open the result in Studio, and download the response JSON.
+
+Start the live workflow with an environment secret:
+
+```bash
+REDUCTO_API_KEY="your_key" npm run dev
+```
+
+Alternatively, authenticate the Reducto CLI. The server reads `~/.reducto/config.yaml` at startup. The API key remains on the server and is never sent to the browser or committed to Git.
+
+Open a house and choose **Parse live** beside a supported record, or use **Parse a document** in the top navigation. Without a credential, those controls explain the setup and the saved results continue to work.
+
+To regenerate the committed representative parses:
 
 ```bash
 npm run reducto:parse
 ```
 
-The script reads `REDUCTO_API_KEY` from the environment or the Reducto CLI config at `~/.reducto/config.yaml`. Never commit an API key.
+The script reads the same server-side credential. Never commit an API key.
 
 Examples:
 
@@ -60,6 +72,10 @@ Examples:
 node scripts/parse-archives.mjs casa-de-vidro --primary --preview-pages=24
 node scripts/parse-archives.mjs shaniwar-wada --preview-pages=24
 ```
+
+MCP is optional: use it when workshop participants are building through Claude, Cursor, or another agent. The Archive House website itself uses the Reducto API because a server route can keep the credential secret. A static-only host will show saved outputs but cannot safely provide live parsing; deploy `scripts/serve.mjs` (or port its two `/api/reducto/*` routes to your host) and set `REDUCTO_API_KEY` as a deployment secret.
+
+The included server binds to `127.0.0.1` by default and is designed for the presenter’s laptop. Before exposing live parsing on a public URL, add user authentication, rate limiting, and usage controls so anonymous visitors cannot consume the Reducto account’s credits.
 
 ## Rebuilding the public archive packs
 

@@ -1,11 +1,10 @@
 #!/usr/bin/env node
 
-import { Blob } from "node:buffer";
 import { readFile, mkdir, writeFile } from "node:fs/promises";
-import { homedir } from "node:os";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
+import { parseDocument, resolveApiKey, uploadDocument } from "./reducto-client.mjs";
 
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectDirectory = path.resolve(scriptDirectory, "..");
@@ -18,21 +17,7 @@ const previewArgument = argumentsList.find((argument) => argument.startsWith("--
 const previewPages = previewArgument ? Number(previewArgument.split("=")[1]) : null;
 const requestedHouseIds = new Set(argumentsList.filter((argument) => !argument.startsWith("--")));
 
-async function resolveApiKey() {
-  if (process.env.REDUCTO_API_KEY) return process.env.REDUCTO_API_KEY;
-
-  try {
-    const savedConfig = await readFile(path.join(homedir(), ".reducto", "config.yaml"), "utf8");
-    const match = savedConfig.match(/^api_key:\s*["']?([^"'\s]+)["']?\s*$/m);
-    if (match) return match[1];
-  } catch {
-    // Fall through to the actionable error below.
-  }
-
-  return null;
-}
-
-const apiKey = await resolveApiKey();
+const { key: apiKey } = await resolveApiKey();
 
 if (!apiKey) {
   console.error(
@@ -46,39 +31,14 @@ if (!apiKey) {
   process.exit(1);
 }
 
-const headers = { Authorization: `Bearer ${apiKey}` };
-
-async function requestJSON(url, options) {
-  const response = await fetch(url, options);
-  const body = await response.text();
-  let payload;
-
-  try {
-    payload = JSON.parse(body);
-  } catch {
-    payload = { raw: body };
-  }
-
-  if (!response.ok) {
-    throw new Error(`${response.status} ${response.statusText}: ${body.slice(0, 500)}`);
-  }
-
-  return payload;
-}
-
 async function uploadLocalFile(relativeInput) {
   const localPath = path.resolve(distDirectory, relativeInput);
   const bytes = await readFile(localPath);
-  const form = new FormData();
-  form.append("file", new Blob([bytes], { type: "application/pdf" }), path.basename(localPath));
-
-  const upload = await requestJSON("https://platform.reducto.ai/upload", {
-    method: "POST",
-    headers,
-    body: form,
+  const upload = await uploadDocument(apiKey, {
+    bytes,
+    fileName: path.basename(localPath),
+    mimeType: "application/pdf",
   });
-
-  if (!upload.file_id) throw new Error("Reducto upload completed without a file_id.");
   return upload.file_id;
 }
 
@@ -87,25 +47,7 @@ async function parseSource(source) {
     ? source.input
     : await uploadLocalFile(source.input);
 
-  const settings = {
-    extraction_mode: "hybrid",
-  };
-  if (previewPages && Number.isFinite(previewPages) && previewPages > 0) {
-    settings.page_range = { start: 1, end: previewPages };
-  }
-
-  return requestJSON("https://platform.reducto.ai/parse", {
-    method: "POST",
-    headers: { ...headers, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      input,
-      settings,
-      formatting: {
-        add_page_markers: true,
-        table_output_format: "dynamic",
-      },
-    }),
-  });
+  return parseDocument(apiKey, { input, previewPages });
 }
 
 const houses = JSON.parse(await readFile(dataPath, "utf8"));
@@ -183,4 +125,4 @@ for (const house of selectedHouses) {
   }
 }
 
-console.log(`\nWrote ${Object.keys(index.sources).length} source records to dist/data/reducto/index.json`);
+console.log(`\nWrote ${Object.keys(index.sources).length} source records to site/data/reducto/index.json`);
