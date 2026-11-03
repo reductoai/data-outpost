@@ -155,5 +155,5 @@ createServer(async (request, response) => {
   }
 }).listen(port, host, () => {
   const mode = reductoAuth.key ? `live via ${reductoAuth.source}` : "saved-result fallback";
-  console.log(`Archive House is running at http://${host}:${port}/ (${mode})`);
+  console.log(`The Unlisted Project is running at http://${host}:${port}/ (${mode})`);
 });

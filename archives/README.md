@@ -1,6 +1,6 @@
 # Local archives
 
-This folder consolidates the source material behind every Archive House listing.
+This folder consolidates the source material behind every Unlisted Project listing.
 
 - `curated-index.json` summarizes the 36-PDF cross-property pack.
 - Every property has a `manifest.json` with source URLs, sizes, pages, and checksums.

@@ -1,6 +1,6 @@
-# Archive House
+# The Unlisted Project
 
-Archive House is a Zillow-style interface for exploring historic homes through the documents that preserve them: handwritten letters, plans, minute books, photographs, finding aids, restoration reports, newspapers, and institutional catalogues.
+The Unlisted Project is a Zillow-style interface for exploring historic homes through the documents that preserve them: handwritten letters, plans, minute books, photographs, finding aids, restoration reports, newspapers, and institutional catalogues.
 
 The project was built for a hands-on Reducto workshop. It pairs a browsable public-record interface with real, messy local archive packs and saved representative Reducto outputs.
 
@@ -18,7 +18,7 @@ Open [http://127.0.0.1:4173](http://127.0.0.1:4173). The server reads only from 
 
 | Part | Purpose |
 | --- | --- |
-| `site/` | The complete static Archive House interface |
+| `site/` | The complete static Unlisted Project interface |
 | `archives/` | Local document packs for all nine properties |
 | `site/data/reducto/` | Saved structured outputs for one representative source per house |
 | `scripts/download-bulky-archives.mjs` | Rebuilds the curated public download packs |
@@ -73,7 +73,7 @@ node scripts/parse-archives.mjs casa-de-vidro --primary --preview-pages=24
 node scripts/parse-archives.mjs shaniwar-wada --preview-pages=24
 ```
 
-MCP is optional: use it when workshop participants are building through Claude, Cursor, or another agent. The Archive House website itself uses the Reducto API because a server route can keep the credential secret. A static-only host will show saved outputs but cannot safely provide live parsing; deploy `scripts/serve.mjs` (or port its two `/api/reducto/*` routes to your host) and set `REDUCTO_API_KEY` as a deployment secret.
+MCP is optional: use it when workshop participants are building through Claude, Cursor, or another agent. The Unlisted Project website itself uses the Reducto API because a server route can keep the credential secret. A static-only host will show saved outputs but cannot safely provide live parsing; deploy `scripts/serve.mjs` (or port its two `/api/reducto/*` routes to your host) and set `REDUCTO_API_KEY` as a deployment secret.
 
 The included server binds to `127.0.0.1` by default and is designed for the presenter’s laptop. Before exposing live parsing on a public URL, add user authentication, rate limiting, and usage controls so anonymous visitors cannot consume the Reducto account’s credits.
 

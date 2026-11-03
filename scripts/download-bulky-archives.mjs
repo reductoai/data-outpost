@@ -370,7 +370,7 @@ index.failed_files = index.packs.reduce((sum, pack) => sum + pack.failed, 0);
 await writeFile(path.join(outputDirectory, "index.json"), `${JSON.stringify(index, null, 2)}\n`);
 
 const lines = [
-  "# Archive House — bulky local archive packs",
+  "# The Unlisted Project — bulky local archive packs",
   "",
   `Generated ${index.generated_at}.`,
   "",
